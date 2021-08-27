@@ -1,0 +1,60 @@
+#!/bin/bash
+
+#
+log()
+{
+	logger "[Deploy LibP] $1"
+	echo "[Deploy LibP] $1"
+}
+complain()
+{
+	logger -s "[Deploy LibP] Complain: $1"
+}
+die()
+{
+	logger -s "[Deploy LibP] FATAL: $1"
+	exit 1
+}
+
+#
+DIR_LIB="$HOME/Documents/cpsc-240/libraries/libPuhfessorP-tester/libPuhfessorP"
+DIR_DEPLOY="$HOME/Documents/cpsc-240/libraries/libPuhfessorP-deploy"
+FILE_SO="libPuhfessorP.asm.so"
+INFOFILE="info.txt"
+
+
+#
+cd "$DIR_LIB" || die "Invalid libP dir: $DIR_LIB"
+git checkout master
+git pull
+
+# Build the library
+BUILD_DIR=. make build || die "Build failed"
+cp "$DIR_LIB/$FILE_SO" "$DIR_DEPLOY" || die "Unable to copy library to deploy dir"
+
+# Generate info into the $INFOFILE
+echo -n "" > "$INFOFILE"
+echo -n "Generated from repository tag: " >> "$INFOFILE"
+git describe --tags >> "$INFOFILE"
+echo -n "Built for OS: " >> "$INFOFILE"
+cat /etc/os-release | grep "PRETTY_NAME" >> "$INFOFILE"
+echo -n "Build date: " >> "$INFOFILE"
+date >> "$INFOFILE"
+mv "$INFOFILE" "$DIR_DEPLOY/$INFOFILE"
+
+# Clean the library
+echo "INFOFILE is:"
+BUILD_DIR=. make clean
+
+#
+cd "$DIR_DEPLOY" || die "Unable to switch to deploy directory"
+git add "$FILE_SO" || die "Unable to stage shared object"
+git add "$INFOFILE" || die "Unable to stage info file"
+git commit -m "Commit new version of $FILE_SO" || die "Unable to commit shared object"
+git push || die "Unable to push changed"
+
+#
+log "Success :)"
+
+exit 0
+

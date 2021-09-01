@@ -47,6 +47,7 @@ class Deployer:
 		self._generate_info_file()
 		self._clean_library()
 		self._push_deploy()
+		print("Deploy seems to have been successful")
 	
 	def _get_library_repo(self):
 		
@@ -210,15 +211,6 @@ class Deployer:
 		
 		return output
 
-"""
 
-#
-git commit -m "Commit new version of $FILE_SO" || die "Unable to commit shared object"
-git push || die "Unable to push changed"
-
-#
-log "Success :)"
-
-"""
 
 

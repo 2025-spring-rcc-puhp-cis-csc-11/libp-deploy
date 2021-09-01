@@ -136,18 +136,25 @@ class Deployer:
 		
 		s = ""
 		
+		# Repo tag
 		tag = self._get_library_latest_tag()
 		s += "Generated from repository tag: {}\n".format(tag)
 		
+		# Operating system
 		with open("/etc/os-release", "rt") as f:
 			os_release_file = f.read()
 			os_release = re.search("VERSION=\\\"(?P<os_name>[^\\\"]+)\\\"", os_release_file)
 			os_release = os_release.group("os_name")
 		s += "Built for OS: {}\n".format(os_release)
 		
+		# Datetime
 		now = datetime.now()
-		s += "Built on: {}".format(now.strftime("%a %B %d, %Y %H:%M%p and %Ss"))
+		s += "Built on: {}\n".format(now.strftime("%a %B %d, %Y %H:%M%p and %Ss"))
 		
+		# Shared object file name
+		s += "Shared object file name: {}\n\n".format(self.__deployed_shared_object_file_name)
+		
+		# Write the file
 		info_file_path = os.path.join(
 			self.__deploy_directory,
 			self.__info_file_name

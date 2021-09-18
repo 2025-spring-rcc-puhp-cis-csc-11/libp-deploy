@@ -22,6 +22,13 @@ Arguments: none
 
 Returns: A 64-bit signed integer
 
+### libPuhfessorP_inputFloat64
+
+The ```libPuhfessorP_inputFloat64``` function will read a 64-bit IEEE 754 floating point number from the console.
+
+Arguments: none
+
+Returns: A 64-bit IEEE 754 floating point number
 
 ## Output Functions
 
@@ -32,6 +39,14 @@ The ```libPuhfessorP_printSignedInteger64``` function will print a signed 64-bit
 Arguments:
 
 1. The integer you wish to print
+
+### libPuhfessorP_printFloat64
+
+The ```libPuhfessorP_printFloat64``` function will print a 64-bit IEEE 754 floating point number to the console.
+
+Arguments:
+
+1. The 64-bit float you wish to print
 
 ## Parsing and Conversion Functions
 
@@ -53,6 +68,16 @@ Arguments:
 
 Returns: a 64-bit integer if the string was valid, or the special number ```0x8000000000000000``` if the string was invalid.
 
+### libPuhfessorP_parseFloat64
+
+The ```libPuhfessorP_parseFloat64``` function converts a string to a 64-bit IEEE 754 floating point number.
+
+Arguments:
+
+1. A pointer to the string's first character
+
+Returns: A 64-bit IEEE 754 floating point number if the string was valid, or just a ```0``` if the string was invalid.
+
 ### libPuhfessorP_signedInteger64ToString
 
 The ```libPuhfessorP_signedInteger64ToString``` function will convert a signed 64-bit integer to a string.
@@ -62,7 +87,14 @@ Arguments:
 1. The integer you wish to convert
 2. The address of a character buffer where the string can be written
 
+### libPuhfessorP_float64ToString
 
+The ```libPuhfessorP_float64ToString``` function will convert a 64-bit IEEE 754 floating point number to a string.
+
+Arguments:
+
+1. The 64-bit float you wish to convert
+2. The address of a character buffer where the string can be written
 
 ## Debugging Functions
 

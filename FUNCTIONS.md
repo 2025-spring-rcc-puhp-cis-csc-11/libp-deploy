@@ -3,6 +3,16 @@
 
 This document describes some of the functions available inside the *libPuhfessorP* library.
 
+## Notes
+
+This section contains noteworthy concerns and information.
+
+### Stack Alignment
+
+If your program mysteriously crashes with ```segmentation fault``` when calling functions in this library, it may be that your stack is not properly aligned. Some functions in libPuhfessorP rely on other functions inside the C standard library, which may in turn expect that the stack is aligned to 16 bytes before a ```call``` instruction.
+
+Since each ```push``` or ```pop``` instruction alters the stack pointer by 8 bytes, one thing you can try is adding an extra pair of ```push```/```pop``` in the prologue and epilogue areas of your function before a ```call``` is made.
+
 ## Input Functions
 
 ### libPuhfessorP_inputLine

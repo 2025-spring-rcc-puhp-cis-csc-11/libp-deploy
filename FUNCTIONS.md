@@ -13,6 +13,22 @@ If your program mysteriously crashes with ```segmentation fault``` when calling 
 
 Since each ```push``` or ```pop``` instruction alters the stack pointer by 8 bytes, one thing you can try is adding an extra pair of ```push```/```pop``` in the prologue and epilogue areas of your function before a ```call``` is made.
 
+### Special Values
+
+This section describes some special values to be aware of when working with this library.
+
+#### Special 64-bit Signed Integer Values
+
+When calling on a function that returns a signed 64-bit integer, be aware that the value ```0x8000000000000000``` represents an invalid integer. Normally, this value essentially represents the "most negative integer" that a 64-bit signed integer can represent, but it is being used to represent an invalid integer here in this library.
+
+It's a good idea to check the value of integers you receive from any functions against this special value, as a way to check whether or not you received a valid integer.
+
+|Base   |Value                     |
+|-------|-------------------------:|
+|Hex    |0x8000000000000000        |
+|Decimal|-9,223,372,036,854,775,808|
+|Binary|10000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000|
+
 ## Input Functions
 
 ### libPuhfessorP_inputLine
@@ -30,7 +46,11 @@ The ```libPuhfessorP_inputSignedInteger64``` function will read a signed 64-bit 
 
 Arguments: none
 
-Returns: A 64-bit signed integer
+Returns:
+
+* If the user entered a valid integer: A 64-bit signed integer
+
+* Otherwise: The special value for an invalid integer (explained above)
 
 ### libPuhfessorP_inputFloat64
 
@@ -45,6 +65,8 @@ Returns: A 64-bit IEEE 754 floating point number
 ### libPuhfessorP_printSignedInteger64
 
 The ```libPuhfessorP_printSignedInteger64``` function will print a signed 64-bit integer to the console.
+
+Internally, this function first calls on ```libPuhfessorP_signedInteger64ToString``` to convert your integer to a string, then prints it to the terminal. Therefore, it's a good idea to check the bevahior of ```libPuhfessorP_signedInteger64ToString``` as well.
 
 Arguments:
 
@@ -76,7 +98,11 @@ Arguments:
 
 1. A pointer to the string's first character
 
-Returns: a 64-bit integer if the string was valid, or the special number ```0x8000000000000000``` if the string was invalid.
+Returns:
+
+* If the string contained a valid integer: A 64-bit signed integer
+
+* Otherwise: The special value for an invalid integer (explained above)
 
 ### libPuhfessorP_parseFloat64
 
@@ -91,6 +117,8 @@ Returns: A 64-bit IEEE 754 floating point number if the string was valid, or jus
 ### libPuhfessorP_signedInteger64ToString
 
 The ```libPuhfessorP_signedInteger64ToString``` function will convert a signed 64-bit integer to a string.
+
+Note that if you send it the special value for an invalid integer (explained above), it will simply render the letter ```X```
 
 Arguments:
 

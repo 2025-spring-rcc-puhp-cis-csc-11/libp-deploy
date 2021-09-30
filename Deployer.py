@@ -56,12 +56,41 @@ class Deployer:
 		return repo
 	
 	def _get_library_latest_tag(self):
+		
+		tags = self._get_sorted_tags()
+		latest_tag = tags[-1]
+		
+		return latest_tag
 	
+	def _get_sorted_tags(self):
+		
 		repo = self._get_library_repo()
 		
-		tag = repo.git.tag(sort='creatordate').split('\n')[-1]
+		tags_str = repo.git.tag(sort='creatordate')
+		tags = tags_str.split("\n")
 		
-		return tag
+		def ensure_three_digits(v: str):
+			v = ("0" * (3 - len(v))) + v
+			return v
+		
+		def sort_lambda(semver: list):
+			s = ensure_three_digits(semver[0]) + "-" + ensure_three_digits(semver[1]) + "-" + ensure_three_digits(semver[2])
+			return s
+		
+		tags_semver = []
+		for tag in tags:
+			match = re.match("^v(?P<major>[0-9]+)\.(?P<minor>[0-9]+)\.(?P<patch>[0-9]+)$", tag)
+			assert match, "Unable to parse semver for tag: {}".format(tag)
+			tag_semver = [match.group("major"), match.group("minor"), match.group("patch")]
+			tags_semver.append(tag_semver)
+		
+		tags_semver_sorted = sorted(tags_semver, key=sort_lambda)
+		
+		tags_sorted = []
+		for tag_semver in tags_semver_sorted:
+			tags_sorted.append("v" + ".".join(tag_semver))
+		
+		return tags_sorted
 	
 	def _get_deploy_repo(self):
 		

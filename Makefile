@@ -18,7 +18,7 @@ LIBP_DIR_ABS := $(abspath $(LIBP_DIR))
 $(call say,Using hacky hard-coded path to libP: $(LIBP_DIR_ABS))
 
 
-DEPLOY_DIR := .
+DEPLOY_DIR := ./_deploy
 DEPLOY_DIR_ABS := $(abspath $(DEPLOY_DIR))
 $(call say,Using deploy dir: $(DEPLOY_DIR_ABS))
 

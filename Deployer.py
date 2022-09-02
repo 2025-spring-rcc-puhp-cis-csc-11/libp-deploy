@@ -19,12 +19,19 @@ class Deployer:
 		"FUNCTIONS.md"
 	]
 	
-	def __init__(self, library_directory, deploy_directory, shared_object_file_name, info_file_name):
+	def __init__(self, library_directory, build_directory, deploy_directory, shared_object_file_name, info_file_name):
 		
 		self.__library_directory = library_directory
+		self.__build_directory = build_directory
 		self.__deploy_directory = deploy_directory
 		self.__shared_object_file_name = shared_object_file_name
 		self.__info_file_name = info_file_name
+		
+		self.info(f"Library directory: {self.__library_directory}")
+		self.info(f"Build directory: {self.__build_directory}")
+		self.info(f"Deploy directory: {self.__deploy_directory}")
+		self.info(f"Shared Object file: {self.__shared_object_file_name}")
+		self.info(f"Info file: {self.__info_file_name}")
 		
 		self.__deployed_shared_object_file_name: str = None
 		self._compute_deployed_shared_object_file_name()
@@ -47,7 +54,11 @@ class Deployer:
 		self._generate_info_file()
 		self._clean_library()
 		self._push_deploy()
-		print("Deploy seems to have been successful")
+		self.info("Deploy seems to have been successful")
+	
+	def info(self, s):
+		
+		print(f"[Deployer][Info] {s}")
 	
 	def _get_library_repo(self):
 		
@@ -119,7 +130,7 @@ class Deployer:
 				"make", "build"
 			],
 			env={
-				"BUILD_DIR": self.__library_directory
+				"BUILD_DIR": self.__build_directory
 			},
 			working_directory=self.__library_directory
 		)
@@ -131,7 +142,7 @@ class Deployer:
 				"make", "clean"
 			],
 			env={
-				"BUILD_DIR": self.__library_directory
+				"BUILD_DIR": self.__build_directory
 			},
 			working_directory=self.__library_directory
 		)
@@ -141,6 +152,7 @@ class Deployer:
 		# Copy the shared object
 		library_source = os.path.join(
 			self.__library_directory,
+			self.__build_directory,
 			self.__shared_object_file_name
 		)
 		library_dest = os.path.join(
@@ -234,7 +246,7 @@ class Deployer:
 		
 		assert exit_code == 0, "Unexpected exit code {} after execution".format(exit_code)
 		
-		print("\n\n***** Execution success")
+		self.info("\n\n***** Execution success")
 		
 		return stdout, stderr
 	

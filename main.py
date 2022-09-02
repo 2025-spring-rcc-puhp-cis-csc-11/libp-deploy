@@ -18,6 +18,12 @@ def main():
 		help="Specify the directory where the library resides"
 	)
 	parser.add_argument(
+		"--build", "--build-dir", "--build-directory",
+		dest="build_directory",
+		required=True,
+		help="Directory for temporary build files"
+	)
+	parser.add_argument(
 		"--deploy", "--deploy-dir", "--deploy-directory",
 		dest="deploy_directory",
 		required=True,
@@ -40,6 +46,7 @@ def main():
 	
 	deployer = Deployer(
 		library_directory=args.library_directory,
+		build_directory=args.build_directory,
 		deploy_directory=args.deploy_directory,
 		shared_object_file_name=args.shared_object_file_name,
 		info_file_name=args.info_file_name

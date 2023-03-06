@@ -1,5 +1,5 @@
 Generated from repository tag: v0.11.3
-Built for OS: 22.04.1 LTS (Jammy Jellyfish)
-Built on: Fri September 02, 2022 01:35AM and 04s
+Built for OS: 22.10 (Kinetic Kudu)
+Built on: Mon March 06, 2023 03:05AM and 17s
 Shared object file name: libPuhfessorP.v0.11.3.so
 

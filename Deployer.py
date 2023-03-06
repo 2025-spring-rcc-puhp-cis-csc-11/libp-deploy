@@ -184,8 +184,9 @@ class Deployer:
 		# Operating system
 		with open("/etc/os-release", "rt") as f:
 			os_release_file = f.read()
-			os_release = re.search("VERSION=\\\"(?P<os_name>[^\\\"]+)\\\"", os_release_file)
-			os_release = os_release.group("os_name")
+			os_release_name = re.search("^NAME=\\\"(?P<os_name>[^\\\"]+)\\\"", os_release_file, re.MULTILINE).group("os_name")
+			os_release_version = re.search("VERSION=\\\"(?P<os_version>[^\\\"]+)\\\"", os_release_file).group("os_version")
+			os_release = os_release_name + " " + os_release_version
 		s += "Built for OS: {}\n".format(os_release)
 		
 		# Datetime

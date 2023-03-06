@@ -12,7 +12,7 @@ def main():
 		prog="libPuhfessorP Deploy Script, woot"
 	)
 	parser.add_argument(
-		"--lib", "--lib-dir", "--library-directory",
+		"--lib", "--library", "--lib-dir", "--library-directory",
 		dest="library_directory",
 		required=True,
 		help="Specify the directory where the library resides"

@@ -207,7 +207,7 @@ class Deployer:
 		
 		# Datetime
 		now = datetime.now()
-		s += "Built on: {}\n".format(now.strftime("%a %B %d, %Y %H:%M%p and %Ss"))
+		s += "Built on: {}\n".format(now.strftime("%a %B %d, %Y %l:%M%p and %Ss"))
 		
 		# Shared object file name
 		s += "Shared object file name: {}\n\n".format(self.__deployed_shared_object_file_name)

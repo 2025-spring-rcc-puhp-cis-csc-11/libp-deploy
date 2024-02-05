@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
+import os.path
 
+from domain.Deployer import Deployer
 
-from Deployer import Deployer
 
 import argparse
 
@@ -44,9 +45,12 @@ def main():
 	
 	args = parser.parse_args()
 	
+	repo_dir = os.path.dirname(__file__)
+	
 	deployer = Deployer(
 		library_directory=args.library_directory,
 		build_directory=args.build_directory,
+		deploy_repo_directory=repo_dir,
 		deploy_directory=args.deploy_directory,
 		shared_object_file_name=args.shared_object_file_name,
 		info_file_name=args.info_file_name

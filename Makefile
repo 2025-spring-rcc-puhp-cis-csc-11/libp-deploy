@@ -18,7 +18,7 @@ LIBP_DIR_ABS := $(abspath $(LIBP_DIR))
 $(call say,Using hacky hard-coded path to libP: $(LIBP_DIR_ABS))
 
 
-DEPLOY_DIR := .
+DEPLOY_DIR := ./generated
 DEPLOY_DIR_ABS := $(abspath $(DEPLOY_DIR))
 $(call say,Using deploy dir: $(DEPLOY_DIR_ABS))
 
@@ -40,7 +40,10 @@ default: help
 help:
 	@echo "***** Lib PuhfessorP - Deploy *****"
 	@echo
+	@echo "make help             ==> This menu"
+	@echo
 	@echo "make build            ==> Build libP"
+	@echo "make clean            ==> Clean generated directory (currently: $(DEPLOY_DIR)"
 	@echo
 .PHONY: help
 
@@ -52,6 +55,14 @@ build:	| $(BUILD_DIR_FOR_LOCAL) $(DEPLOY_DIR)
 		--build '$(BUILD_DIR_FOR_LIBP)' `# Give a libp-relative path here` \
 		--deploy '$(DEPLOY_DIR_ABS)' \
 	&& rm -rfv $(BUILD_DIR_FOR_LOCAL)
+.PHONY: build
+
+
+#
+clean:
+	@echo Cleaning
+	-rm -rfv $(DEPLOY_DIR)
+.PHONY: clean
 
 
 #

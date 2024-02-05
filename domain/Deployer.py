@@ -19,20 +19,31 @@ class Deployer:
 		"FUNCTIONS.md"
 	]
 	
-	def __init__(self, library_directory, build_directory, deploy_directory, shared_object_file_name, info_file_name):
+	def __init__(
+			self,
+			library_directory,
+			build_directory,
+			deploy_repo_directory,
+			deploy_directory,
+			shared_object_file_name,
+			info_file_name
+	):
 		
 		self.__library_directory = library_directory
 		self.__build_directory = build_directory
+		self.__deploy_repo_directory = deploy_repo_directory
 		self.__deploy_directory = deploy_directory
 		self.__shared_object_file_name = shared_object_file_name
 		self.__info_file_name = info_file_name
 		
 		self.info(f"Library directory: {self.__library_directory}")
 		self.info(f"Build directory: {self.__build_directory}")
+		self.info(f"Deploy repo directory: {self.__deploy_repo_directory}")
 		self.info(f"Deploy directory: {self.__deploy_directory}")
 		self.info(f"Shared Object file: {self.__shared_object_file_name}")
 		self.info(f"Info file: {self.__info_file_name}")
 		
+		# noinspection PyTypeChecker
 		self.__deployed_shared_object_file_name: str = None
 		self._compute_deployed_shared_object_file_name()
 	
@@ -56,8 +67,8 @@ class Deployer:
 		self._push_deploy()
 		self.info("Deploy seems to have been successful")
 	
-	def info(self, s):
-		
+	@staticmethod
+	def info(s):
 		print(f"[Deployer][Info] {s}")
 	
 	def _get_library_repo(self):
@@ -105,7 +116,7 @@ class Deployer:
 	
 	def _get_deploy_repo(self):
 		
-		repo = Repo(self.__deploy_directory)
+		repo = Repo(self.__deploy_repo_directory)
 		
 		return repo
 	
@@ -116,6 +127,10 @@ class Deployer:
 		
 		assert self.__shared_object_file_name, "Shared object file name must be set"
 		assert self.__info_file_name, "Shared object file name must be set"
+		
+		# Ensure the generated directory exists
+		if not os.path.exists(self.__deploy_directory):
+			os.mkdir(path=self.__deploy_directory)
 	
 	def _pull_library(self):
 		
@@ -155,23 +170,24 @@ class Deployer:
 			self.__build_directory,
 			self.__shared_object_file_name
 		)
-		library_dest = os.path.join(
+		library_destination = os.path.join(
 			self.__deploy_directory,
 			self.__deployed_shared_object_file_name
 		)
-		shutil.copy(library_source, library_dest)
+		shutil.copy(str(library_source), str(library_destination))
 		
 		# Copy the extra files
 		for file_name in self.__EXTRA_COPY_FILE_NAMES:
-			functions_source = os.path.join(
+			
+			extra_source = os.path.join(
 				self.__library_directory,
 				file_name
 			)
-			functions_dest = os.path.join(
+			extra_destination = os.path.join(
 				self.__deploy_directory,
 				file_name
 			)
-			shutil.copy(functions_source, functions_dest)
+			shutil.copy(extra_source, extra_destination)
 	
 	def _generate_info_file(self):
 		
@@ -208,11 +224,26 @@ class Deployer:
 		
 		repo = self._get_deploy_repo()
 		
-		repo.git.add(self.__deployed_shared_object_file_name)
-		repo.git.add(self.__info_file_name)
+		repo.git.add(
+			os.path.join(
+				self.__deploy_directory,
+				self.__deployed_shared_object_file_name
+			)
+		)
+		repo.git.add(
+			os.path.join(
+				self.__deploy_directory,
+				self.__info_file_name
+			)
+		)
 		
 		for file_name in self.__EXTRA_COPY_FILE_NAMES:
-			repo.git.add(file_name)
+			repo.git.add(
+				os.path.join(
+					self.__deploy_directory,
+					file_name
+				)
+			)
 		
 		repo.git.commit(m="Commit new version of {}".format(self.__deployed_shared_object_file_name))
 		repo.git.push()
@@ -220,14 +251,14 @@ class Deployer:
 	def _execute_command(self, args, env=None, working_directory=None):
 		
 		if env is not None:
-			env = { **os.environ, **env }
+			env = {**os.environ, **env}
 		
 		print("\n\n***** Executing:", args)
 		
 		process = subprocess.Popen(
 			args=args,
 			env=env,
-			#stdin=subprocess.PIPE,
+			# stdin=subprocess.PIPE,
 			stdout=subprocess.PIPE,
 			stderr=subprocess.PIPE,
 			cwd=working_directory,
@@ -251,7 +282,8 @@ class Deployer:
 		
 		return stdout, stderr
 	
-	def _decode_execution_output(self, output):
+	@staticmethod
+	def _decode_execution_output(output):
 		
 		if output:
 			output = output.decode()

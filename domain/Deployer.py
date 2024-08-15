@@ -101,7 +101,10 @@ class Deployer:
 		
 		tags_semver = []
 		for tag in tags:
-			match = re.match("^v(?P<major>[0-9]+)\.(?P<minor>[0-9]+)\.(?P<patch>[0-9]+)$", tag)
+			match = re.match(
+				r"""^v(?P<major>[0-9]+)\.(?P<minor>[0-9]+)\.(?P<patch>[0-9]+)$""",
+				tag
+			)
 			assert match, "Unable to parse semver for tag: {}".format(tag)
 			tag_semver = [match.group("major"), match.group("minor"), match.group("patch")]
 			tags_semver.append(tag_semver)

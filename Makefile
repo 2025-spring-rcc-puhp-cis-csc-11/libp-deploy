@@ -43,7 +43,7 @@ help:
 	@echo "make help             ==> This menu"
 	@echo
 	@echo "make build            ==> Build libP"
-	@echo "make clean            ==> Clean generated directory (currently: $(DEPLOY_DIR)"
+	@echo "make clean            ==> Clean generated directory (currently: $(DEPLOY_DIR))"
 	@echo
 .PHONY: help
 

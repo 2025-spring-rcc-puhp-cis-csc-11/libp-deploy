@@ -5,12 +5,20 @@ from domain.Deployer import Deployer
 
 
 import argparse
+import os
 
 
 def main():
 	
 	parser = argparse.ArgumentParser(
 		prog="libPuhfessorP Deploy Script, woot"
+	)
+	parser.add_argument(
+		"--working-directory", "--working-dir",
+		dest="working_directory",
+		required=False,
+		default=None,
+		help="Specify working directory",
 	)
 	parser.add_argument(
 		"--lib", "--library", "--lib-dir", "--library-directory",
@@ -44,6 +52,9 @@ def main():
 	)
 	
 	args = parser.parse_args()
+	
+	if args.working_directory is not None:
+		os.chdir(args.working_directory)
 	
 	repo_dir = os.path.dirname(__file__)
 	

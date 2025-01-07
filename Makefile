@@ -13,14 +13,16 @@ $(call say,REPO_PATH: $(REPO_PATH))
 
 
 #
-LIBP_DIR := ../libp
-LIBP_DIR_ABS := $(abspath $(LIBP_DIR))
-$(call say,Using hacky hard-coded path to libP: $(LIBP_DIR_ABS))
+LIBP_DIR := ../libPuhfessorP-yasm
+#LIBP_DIR_ABS := $(abspath $(LIBP_DIR))
+#$(call say,Using hacky hard-coded path to libP: $(LIBP_DIR_ABS))
+$(call say,Using hacky hard-coded relative path to libP: $(LIBP_DIR))
 
 
 DEPLOY_DIR := ./generated
-DEPLOY_DIR_ABS := $(abspath $(DEPLOY_DIR))
-$(call say,Using deploy dir: $(DEPLOY_DIR_ABS))
+#DEPLOY_DIR_ABS := $(abspath $(DEPLOY_DIR))
+#$(call say,Using deploy dir: $(DEPLOY_DIR_ABS))
+$(call say,Using deploy dir: $(DEPLOY_DIR))
 
 
 # Build dir will be relative to the libP repo
@@ -51,9 +53,10 @@ help:
 #
 build:	| $(BUILD_DIR_FOR_LOCAL) $(DEPLOY_DIR)
 	pipenv run python ./main.py \
-		--lib '$(LIBP_DIR_ABS)' \
+		--working-directory "`pwd`" \
+		--lib '$(LIBP_DIR)' \
 		--build '$(BUILD_DIR_FOR_LIBP)' `# Give a libp-relative path here` \
-		--deploy '$(DEPLOY_DIR_ABS)' \
+		--deploy '$(DEPLOY_DIR)' \
 	&& rm -rfv $(BUILD_DIR_FOR_LOCAL)
 .PHONY: build
 
